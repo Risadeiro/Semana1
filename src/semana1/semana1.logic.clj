@@ -21,9 +21,11 @@
    :valor (total-por-categoria dados)})
 (defn busca-estabelecimento
   [compras]
-  (-> compras
-      :estabelecimento))
+  (->> compras
+       (filter #(s/includes? (:estabelecimento %) "baza"))
+       (group-by :estabelecimento))
+  )
 
 (println "AGRUPAMENTO\n" (map total-da-categoria(group-by :categoria ((s.db/tudo-do-cliente) :compra))))
 (println "FATURA\n" (map total-da-data (group-by :data ((s.db/tudo-do-cliente) :compra))))
-(println "Busca\n" (group-by :estabelecimento (filter #(s/includes? (:estabelecimento %) "baza")  ((s.db/tudo-do-cliente) :compra))))
+(println "Busca\n" (busca-estabelecimento  ((s.db/tudo-do-cliente) :compra)))
